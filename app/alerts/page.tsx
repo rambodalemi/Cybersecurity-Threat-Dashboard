@@ -4,76 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { AlertTriangle, Search, Filter, Download } from "lucide-react"
 import { AlertsTable } from "@/components/alerts-table"
+import { getRecentAlerts } from "@/lib/data"
 
-// Extended mock data for alerts page
-const allAlerts = [
-  {
-    id: 1,
-    timestamp: new Date().toISOString(),
-    type: "Malware",
-    severity: "High",
-    source: "192.168.1.100",
-    status: "Active",
-  },
-  {
-    id: 2,
-    timestamp: new Date(Date.now() - 300000).toISOString(),
-    type: "Phishing",
-    severity: "Medium",
-    source: "External",
-    status: "Investigating",
-  },
-  {
-    id: 3,
-    timestamp: new Date(Date.now() - 600000).toISOString(),
-    type: "DDoS",
-    severity: "Critical",
-    source: "Multiple",
-    status: "Mitigated",
-  },
-  {
-    id: 4,
-    timestamp: new Date(Date.now() - 900000).toISOString(),
-    type: "Intrusion",
-    severity: "High",
-    source: "192.168.1.50",
-    status: "Blocked",
-  },
-  {
-    id: 5,
-    timestamp: new Date(Date.now() - 1200000).toISOString(),
-    type: "Ransomware",
-    severity: "Critical",
-    source: "192.168.1.75",
-    status: "Contained",
-  },
-  {
-    id: 6,
-    timestamp: new Date(Date.now() - 1500000).toISOString(),
-    type: "SQL Injection",
-    severity: "High",
-    source: "203.0.113.45",
-    status: "Blocked",
-  },
-  {
-    id: 7,
-    timestamp: new Date(Date.now() - 1800000).toISOString(),
-    type: "Brute Force",
-    severity: "Medium",
-    source: "198.51.100.23",
-    status: "Monitoring",
-  },
-  {
-    id: 8,
-    timestamp: new Date(Date.now() - 2100000).toISOString(),
-    type: "Suspicious Activity",
-    severity: "Low",
-    source: "192.168.1.200",
-    status: "Resolved",
-  },
-]
+export default async function AlertsPage() {
+  const allAlerts = await getRecentAlerts()
 
-export default function AlertsPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -94,7 +29,7 @@ export default function AlertsPage() {
 
       <div className="flex-1 p-6 space-y-6">
         {/* Alert Summary */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Total Alerts</CardTitle>
@@ -105,31 +40,21 @@ export default function AlertsPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Critical</CardTitle>
+              <CardTitle className="text-sm font-medium">Unique IPs</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-500">
-                {allAlerts.filter((a) => a.severity === "Critical").length}
+                {new Set(allAlerts.map(a => a.ip)).size}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">High Priority</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-500">
-                {allAlerts.filter((a) => a.severity === "High").length}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Active</CardTitle>
+              <CardTitle className="text-sm font-medium">Threat Types</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-500">
-                {allAlerts.filter((a) => a.status === "Active" || a.status === "Investigating").length}
+                {new Set(allAlerts.map(a => a.type)).size}
               </div>
             </CardContent>
           </Card>

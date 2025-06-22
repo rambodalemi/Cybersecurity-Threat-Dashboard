@@ -3,8 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { BarChart3, TrendingUp, Target, Zap } from "lucide-react"
 import { ThreatAnalysisChart } from "@/components/threat-analysis-chart"
+import { getRecentAlerts } from "@/lib/data"
 
-export default function AnalysisPage() {
+export default async function AnalysisPage() {
+  const recentAlerts = await getRecentAlerts()
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -26,7 +29,7 @@ export default function AnalysisPage() {
               <Target className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">12</div>
+              <div className="text-2xl font-bold">{new Set(recentAlerts.map(a => a.type)).size}</div>
               <p className="text-xs text-muted-foreground">Active attack vectors</p>
             </CardContent>
           </Card>
@@ -46,7 +49,7 @@ export default function AnalysisPage() {
               <Zap className="h-4 w-4 text-yellow-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">23</div>
+              <div className="text-2xl font-bold">{recentAlerts.length}</div>
               <p className="text-xs text-muted-foreground">Identified patterns</p>
             </CardContent>
           </Card>
@@ -80,31 +83,16 @@ export default function AnalysisPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  { time: "14:32", type: "DDoS Attack", severity: "Critical", status: "Mitigated" },
-                  { time: "13:45", type: "Malware Detection", severity: "High", status: "Quarantined" },
-                  { time: "12:18", type: "Suspicious Login", severity: "Medium", status: "Monitoring" },
-                  { time: "11:02", type: "Port Scan", severity: "Low", status: "Blocked" },
-                ].map((incident, index) => (
+                {recentAlerts.slice(0, 6).map((incident, index) => (
                   <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                     <div className="flex items-center gap-3">
-                      <div className="text-sm font-mono text-muted-foreground">{incident.time}</div>
+                      <div className="text-sm font-mono text-muted-foreground">
+                        {new Date(incident.timestamp).toLocaleTimeString()}
+                      </div>
                       <div className="text-sm font-medium">{incident.type}</div>
-                      <Badge
-                        variant={
-                          incident.severity === "Critical"
-                            ? "destructive"
-                            : incident.severity === "High"
-                              ? "destructive"
-                              : incident.severity === "Medium"
-                                ? "default"
-                                : "secondary"
-                        }
-                      >
-                        {incident.severity}
-                      </Badge>
+                      <div className="text-xs text-muted-foreground hidden sm:block">{incident.message}</div>
                     </div>
-                    <Badge variant="outline">{incident.status}</Badge>
+                    <Badge variant="outline">{incident.ip}</Badge>
                   </div>
                 ))}
               </div>
@@ -123,27 +111,12 @@ export default function AnalysisPage() {
               <div className="space-y-3">
                 <h4 className="font-medium">Top Threats</h4>
                 <div className="space-y-2">
-                  {[
-                    { name: "Ransomware Variants", risk: "Critical", trend: "↑" },
-                    { name: "Supply Chain Attacks", risk: "High", trend: "↑" },
-                    { name: "Zero-day Exploits", risk: "High", trend: "→" },
-                    { name: "Social Engineering", risk: "Medium", trend: "↓" },
-                  ].map((threat, index) => (
+                  {[...new Set(recentAlerts.map(a => a.type))].slice(0, 4).map((type, index) => (
                     <div key={index} className="flex items-center justify-between p-2 rounded bg-muted/30">
-                      <span className="text-sm">{threat.name}</span>
+                      <span className="text-sm">{type}</span>
                       <div className="flex items-center gap-2">
-                        <Badge
-                          variant={
-                            threat.risk === "Critical"
-                              ? "destructive"
-                              : threat.risk === "High"
-                                ? "destructive"
-                                : "default"
-                          }
-                        >
-                          {threat.risk}
-                        </Badge>
-                        <span className="text-sm">{threat.trend}</span>
+                        <Badge variant="default">•</Badge>
+                        <span className="text-sm">↑</span>
                       </div>
                     </div>
                   ))}

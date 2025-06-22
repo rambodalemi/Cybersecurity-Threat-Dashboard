@@ -1,4 +1,4 @@
-import { Shield, AlertTriangle, BarChart3, Activity, FileText, Settings, Home, Eye, Network, Lock } from "lucide-react"
+import { Shield, AlertTriangle, BarChart3, Home, Lock } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -28,31 +28,6 @@ const menuItems = [
     title: "Threat Analysis",
     url: "/analysis",
     icon: BarChart3,
-  },
-  {
-    title: "Network Monitor",
-    url: "/network",
-    icon: Network,
-  },
-  {
-    title: "System Status",
-    url: "/status",
-    icon: Activity,
-  },
-  {
-    title: "Vulnerability Scan",
-    url: "/vulnerabilities",
-    icon: Eye,
-  },
-  {
-    title: "Security Reports",
-    url: "/reports",
-    icon: FileText,
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
   },
 ]
 

@@ -5,58 +5,15 @@ import { AlertTriangle, Shield, Activity, Clock } from "lucide-react"
 import { ThreatChart } from "@/components/threat-chart"
 import { AlertsTable } from "@/components/alerts-table"
 import { ThreatMap } from "@/components/threat-map"
+import { getRecentAlerts, getChartData } from "@/lib/data" // updated import to your db file
 
-// Mock data for demonstration
-const mockAlerts = [
-  {
-    id: 1,
-    timestamp: new Date().toISOString(),
-    type: "Malware",
-    severity: "High",
-    source: "192.168.1.100",
-    status: "Active",
-  },
-  {
-    id: 2,
-    timestamp: new Date(Date.now() - 300000).toISOString(),
-    type: "Phishing",
-    severity: "Medium",
-    source: "External",
-    status: "Investigating",
-  },
-  {
-    id: 3,
-    timestamp: new Date(Date.now() - 600000).toISOString(),
-    type: "DDoS",
-    severity: "Critical",
-    source: "Multiple",
-    status: "Mitigated",
-  },
-  {
-    id: 4,
-    timestamp: new Date(Date.now() - 900000).toISOString(),
-    type: "Intrusion",
-    severity: "High",
-    source: "192.168.1.50",
-    status: "Blocked",
-  },
-  {
-    id: 5,
-    timestamp: new Date(Date.now() - 1200000).toISOString(),
-    type: "Ransomware",
-    severity: "Critical",
-    source: "192.168.1.75",
-    status: "Contained",
-  },
-]
+export default async function Dashboard() {
+  const alerts = await getRecentAlerts()
+  const chartData = await getChartData()
 
-const chartData = Array.from({ length: 24 }, (_, i) => ({
-  time: `${23 - i}:00`,
-  threats: Math.floor(Math.random() * 50) + 10,
-  blocked: Math.floor(Math.random() * 30) + 5,
-})).reverse()
+  // Count critical alerts for badge
+  const criticalCount = alerts.filter(a => a.type === "Critical").length
 
-export default function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -72,8 +29,8 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <Badge variant="destructive" className="text-xs">
               <AlertTriangle className="h-3 w-3 mr-1" />
-              <span className="hidden sm:inline">3 Critical</span>
-              <span className="sm:hidden">3</span>
+              <span className="hidden sm:inline">{criticalCount} Critical</span>
+              <span className="sm:hidden">{criticalCount}</span>
             </Badge>
           </div>
         </div>
@@ -88,8 +45,8 @@ export default function Dashboard() {
               <AlertTriangle className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-xl sm:text-2xl font-bold text-red-500">127</div>
-              <p className="text-xs text-muted-foreground">+12% from last hour</p>
+              <div className="text-xl sm:text-2xl font-bold text-red-500">{alerts.length}</div>
+              <p className="text-xs text-muted-foreground">+{alerts.length} today</p>
             </CardContent>
           </Card>
           <Card>
@@ -98,6 +55,7 @@ export default function Dashboard() {
               <Shield className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
+              {/* Since blocked count is not in your alerts, hardcoded or aggregate later */}
               <div className="text-xl sm:text-2xl font-bold text-green-500">2,847</div>
               <p className="text-xs text-muted-foreground">+23% from yesterday</p>
             </CardContent>
@@ -154,7 +112,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-3 sm:p-6">
             <div className="overflow-x-auto">
-              <AlertsTable alerts={mockAlerts} />
+              <AlertsTable alerts={alerts} />
             </div>
           </CardContent>
         </Card>
