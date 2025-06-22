@@ -1,103 +1,164 @@
-import Image from "next/image";
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { AlertTriangle, Shield, Activity, Clock } from "lucide-react"
+import { ThreatChart } from "@/components/threat-chart"
+import { AlertsTable } from "@/components/alerts-table"
+import { ThreatMap } from "@/components/threat-map"
 
-export default function Home() {
+// Mock data for demonstration
+const mockAlerts = [
+  {
+    id: 1,
+    timestamp: new Date().toISOString(),
+    type: "Malware",
+    severity: "High",
+    source: "192.168.1.100",
+    status: "Active",
+  },
+  {
+    id: 2,
+    timestamp: new Date(Date.now() - 300000).toISOString(),
+    type: "Phishing",
+    severity: "Medium",
+    source: "External",
+    status: "Investigating",
+  },
+  {
+    id: 3,
+    timestamp: new Date(Date.now() - 600000).toISOString(),
+    type: "DDoS",
+    severity: "Critical",
+    source: "Multiple",
+    status: "Mitigated",
+  },
+  {
+    id: 4,
+    timestamp: new Date(Date.now() - 900000).toISOString(),
+    type: "Intrusion",
+    severity: "High",
+    source: "192.168.1.50",
+    status: "Blocked",
+  },
+  {
+    id: 5,
+    timestamp: new Date(Date.now() - 1200000).toISOString(),
+    type: "Ransomware",
+    severity: "Critical",
+    source: "192.168.1.75",
+    status: "Contained",
+  },
+]
+
+const chartData = Array.from({ length: 24 }, (_, i) => ({
+  time: `${23 - i}:00`,
+  threats: Math.floor(Math.random() * 50) + 10,
+  blocked: Math.floor(Math.random() * 30) + 5,
+})).reverse()
+
+export default function Dashboard() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex flex-col min-h-screen">
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-14 items-center gap-2 sm:gap-4 px-3 sm:px-4">
+          <SidebarTrigger />
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <h1 className="text-lg sm:text-xl font-semibold truncate">Cybersecurity Threat Dashboard</h1>
+            <Badge variant="outline" className="hidden sm:flex text-green-600 border-green-600 text-xs">
+              <Activity className="h-3 w-3 mr-1" />
+              System Online
+            </Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="destructive" className="text-xs">
+              <AlertTriangle className="h-3 w-3 mr-1" />
+              <span className="hidden sm:inline">3 Critical</span>
+              <span className="sm:hidden">3</span>
+            </Badge>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </header>
+
+      <div className="flex-1 p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+        {/* Key Metrics */}
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium">Active Threats</CardTitle>
+              <AlertTriangle className="h-4 w-4 text-red-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold text-red-500">127</div>
+              <p className="text-xs text-muted-foreground">+12% from last hour</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium">Blocked Attacks</CardTitle>
+              <Shield className="h-4 w-4 text-green-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold text-green-500">2,847</div>
+              <p className="text-xs text-muted-foreground">+23% from yesterday</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium">System Health</CardTitle>
+              <Activity className="h-4 w-4 text-blue-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold text-blue-500">98.7%</div>
+              <p className="text-xs text-muted-foreground">All systems operational</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium">Response Time</CardTitle>
+              <Clock className="h-4 w-4 text-yellow-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold text-yellow-500">1.2s</div>
+              <p className="text-xs text-muted-foreground">Average detection time</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts Section */}
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg">Threat Activity (24h)</CardTitle>
+              <CardDescription className="text-sm">Real-time threat detection and blocking statistics</CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 sm:p-6">
+              <ThreatChart data={chartData} />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base sm:text-lg">Global Threat Map</CardTitle>
+              <CardDescription className="text-sm">Geographic distribution of detected threats</CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 sm:p-6">
+              <ThreatMap />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent Alerts */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base sm:text-lg">Recent Security Alerts</CardTitle>
+            <CardDescription className="text-sm">Latest security incidents requiring attention</CardDescription>
+          </CardHeader>
+          <CardContent className="p-3 sm:p-6">
+            <div className="overflow-x-auto">
+              <AlertsTable alerts={mockAlerts} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
-  );
+  )
 }
