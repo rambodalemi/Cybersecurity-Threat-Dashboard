@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛡️ Cybersecurity Threat Detection Dashboard
 
-## Getting Started
+A full-stack real-time threat detection and alerting dashboard built with:
 
-First, run the development server:
+* **Next.js 15 App Router**
+* **MongoDB** for log and alert storage
+* **shadcn/ui** and **Recharts** for a modern responsive UI
+* **Zod**, **React Hook Form**, and **Tailwind CSS** for interactive forms
+* **Nodemailer (Gmail)** for sending alerts via email
+
+---
+
+## 📦 Features
+
+* 🌐 Real-time threat detection via POST `/api/logs`
+* 📧 Sends alerts to configured Gmail accounts using SMTP
+* 📊 Dynamic dashboards with chart visualizations (shadcn + Recharts)
+* ✅ Admin interface to send test alerts manually
+* 🔍 Dashboard includes:
+
+  * Recent Alerts
+  * Threat Activity Charts
+  * Threat Intelligence
+  * Analysis Summary
+
+---
+
+## 🔧 Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/cybersecurity-dashboard.git
+cd cybersecurity-dashboard
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Create `.env.local`
+
+```env
+MONGO_URI=your_mongodb_uri
+EMAIL_USER=your_gmail_account@gmail.com
+EMAIL_PASS=your_app_password
+ALERT_EMAIL=default_recipient@gmail.com
+```
+
+> 🔐 You must use an **App Password** for Gmail (not your actual password).
+> See: [https://support.google.com/accounts/answer/185833](https://support.google.com/accounts/answer/185833)
+
+---
+
+## 🚀 Running the Project
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🧪 Test the Email System
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* Navigate to `/`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* Fill out the form with:
 
-## Learn More
+  * **Gmail Address** (receiver)
+  * **Subject**
+  * **Threat Type** from dropdown (e.g. `sqlmap trying brute force on admin.php`)
 
-To learn more about Next.js, take a look at the following resources:
+* Submit the form
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* If the threat matches a detector, the system will send an alert
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📡 API Usage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### POST `/api/logs`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Send system logs or test data to trigger detection:
+
+```json
+{
+  "ip": "203.0.113.45",
+  "message": "sqlmap trying brute force on admin.php",
+  "receiver": "admin@example.com",
+  "emailSubject": "🚨 Suspicious Activity"
+}
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "alerts": [
+    {
+      "type": "Brute Force",
+      "message": "Detected SQLMap brute force against admin.php"
+    }
+  ]
+}
+```
+
+---
+
+## 📁 Project Structure
+
+```txt
+/app
+  /api/logs         → API endpoint to receive and evaluate logs
+  /             → Test alert UI form
+/components        → UI components (alerts table, chart, etc)
+/lib               → Database, notification, detection logic
+```
+
+---
+
+## 📌 Roadmap
+
+* [x] Add log ingestion and email alerts
+* [x] Admin form to manually trigger threats
+* [x] Chart visualization with shadcn chart wrapper
+* [ ] Add SMS/Discord alerts (optional)
+* [ ] Role-based dashboard views
+* [ ] Add log search and filtering
+
+---
+
+## 🙌 Contributions
+
+Feel free to fork this repo and submit PRs. Any feedback or suggestions are welcome!
+
+---
+
+## 🧑‍💻 Author
+
+Developed by [Your Name](https://github.com/your-username)
+
+---
+
+## 🛡️ License
+
+This project is licensed under the MIT License.
