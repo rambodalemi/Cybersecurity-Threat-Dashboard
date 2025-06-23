@@ -1,4 +1,4 @@
-import { Shield, AlertTriangle, BarChart3, Home, Lock } from "lucide-react"
+import { Shield, AlertTriangle, BarChart3, Home, Lock, LayoutDashboard } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -15,9 +15,14 @@ import Link from "next/link"
 
 const menuItems = [
   {
-    title: "Dashboard",
+    title: "Home",
     url: "/",
     icon: Home,
+  },
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
   },
   {
     title: "Threat Alerts",
