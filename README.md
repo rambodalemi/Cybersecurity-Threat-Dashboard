@@ -30,7 +30,7 @@ A full-stack real-time threat detection and alerting dashboard built with:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/cybersecurity-dashboard.git
+git clone https://github.com/rambodalemi/Cybersecurity-Threat-Dashboard.git
 cd cybersecurity-dashboard
 ```
 
@@ -138,7 +138,7 @@ Feel free to fork this repo and submit PRs. Any feedback or suggestions are welc
 
 ## 🧑‍💻 Author
 
-Developed by [Your Name](https://github.com/your-username)
+Developed by [Rambod](https://github.com/rambodalemi)
 
 ---
 
